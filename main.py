@@ -32,13 +32,14 @@ def main():
     global CALCULATE_DEVICE
     CALCULATE_DEVICE = "npu:{}".format(args.npu)
     torch.npu.set_device(CALCULATE_DEVICE)
+    args.npu = torch.device(CALCULATE_DEVICE)
     print("use ", CALCULATE_DEVICE)
 
     # os.environ['npu_VISIBLE_DEVICES'] = str(args.gpu_id)
 
     # args.npu= get_npu(torch.npu.is_available() and args.gpu_id != -1,args.gpu_id)
-    args.npu = torch.device(CALCULATE_DEVICE)
-    print('npu', args.npu)
+
+
 
     cfg = get_config()[1]
     args.cfg = cfg
