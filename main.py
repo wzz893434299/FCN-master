@@ -1,4 +1,4 @@
-import torch.npu
+import torch
 
 from utils import get_config, get_log_dir, get_cuda
 from data_loader import get_loader
@@ -25,35 +25,35 @@ parser.add_argument('--npu', default=1, type=int, help='NPU id to use.')
 
 
 def main():
-    args = parser.parse_args()
+    opts = parser.parse_args()
 
-    if args.npu is None:
-        args.npu = 0
+    if opts.npu is None:
+        opts.npu = 0
     global CALCULATE_DEVICE
-    CALCULATE_DEVICE = "npu:{}".format(args.npu)
+    # CALCULATE_DEVICE = "npu:{}".format(opts.npu)
     torch.npu.set_device(CALCULATE_DEVICE)
-    args.npu = torch.device(CALCULATE_DEVICE)
+    opts.cuda = torch.device(CALCULATE_DEVICE)
     print("use ", CALCULATE_DEVICE)
 
-    # os.environ['npu_VISIBLE_DEVICES'] = str(args.gpu_id)
+    # os.environ['npu_VISIBLE_DEVICES'] = str(opts.gpu_id)
 
-    # args.npu= get_npu(torch.npu.is_available() and args.gpu_id != -1,args.gpu_id)
+    # opts.npu= get_npu(torch.npu.is_available() and opts.gpu_id != -1,opts.gpu_id)
 
 
 
     cfg = get_config()[1]
-    args.cfg = cfg
+    opts.cfg = cfg
 
-    if args.mode in ['train', 'trainval']:
-        args.out = get_log_dir('fcn' + args.fcn, 1, cfg)
-        print('Output logs: ', args.out)
+    if opts.mode in ['train', 'trainval']:
+        opts.out = get_log_dir('fcn' + opts.fcn, 1, cfg)
+        print('Output logs: ', opts.out)
 
-    data = get_loader(args)
+    data = get_loader(opts)
 
-    trainer = Trainer(data, args)
-    if args.mode == 'val':
+    trainer = Trainer(data, opts)
+    if opts.mode == 'val':
         trainer.Test()
-    elif args.mode == 'demo':
+    elif opts.mode == 'demo':
         trainer.Demo()
     else:
         trainer.Train()
